@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
+import './App.css'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import CreateNew from './components/CreateNew'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Success from './components/Success'
+import Error from './components/Error'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,7 +16,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleLogin = async (event) => {
       event.preventDefault()
@@ -26,7 +30,12 @@ const App = () => {
           setUser(user)
           setUsername('')
           setPassword('')
+
+          setSuccessMessage('Login succeeded')
+          setTimeout(() => setSuccessMessage(null), 5000)
       } catch(exception) {
+          setErrorMessage(exception.response.data.error)
+          setTimeout(() => setErrorMessage(null), 5000)
       }
   }
 
@@ -40,13 +49,21 @@ const App = () => {
           setTitle('')
           setAuthor('')
           setUrl('')
-      } catch (execption) {
+
+          setSuccessMessage(`A new blog ${createdBlog.title} by ${createdBlog.author} added`)
+          setTimeout(() => setSuccessMessage(null), 5000)
+      } catch (exception) {
+          setErrorMessage(exception.response.data.error)
+          setTimeout(() => setErrorMessage(null), 5000)
       }
   }
 
   const handleLogout = async () => {
       window.localStorage.setItem('loggedBlogUser', '')
       setUser(null)
+
+      setSuccessMessage('Logged out')
+      setTimeout(() => setSuccessMessage(null), 5000)
   }
 
   useEffect(() => {
@@ -71,11 +88,15 @@ const App = () => {
                 password={password}
                 setPassword={setPassword}
                 handleLogin={handleLogin}
+                successMessage={successMessage}
+                errorMessage={errorMessage}
              />
         } else {
       return (
           <div>
             <h2>blogs</h2>
+            <Success message={successMessage}/>
+            <Error message={errorMessage}/>
             <div>
                 <span>{user.name} logged in</span>
                 <input

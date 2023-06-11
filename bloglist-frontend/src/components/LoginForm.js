@@ -1,7 +1,13 @@
-const LoginForm = ({username, setUsername, password, setPassword, handleLogin}) => {
+import Success from './Success'
+import Error from './Error'
+
+const LoginForm = ({username, setUsername, password, setPassword, handleLogin, successMessage, errorMessage}) => {
+
     return (
         <div>
             <h1>log in to application</h1>
+            <Success message={successMessage}/>
+            <Error message={errorMessage}/>
             <form onSubmit={handleLogin}>
                 <div>
                     username
