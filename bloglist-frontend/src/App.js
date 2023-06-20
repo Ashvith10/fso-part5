@@ -3,6 +3,7 @@ import './App.css'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import CreateNew from './components/CreateNew'
+import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Success from './components/Success'
@@ -105,15 +106,17 @@ const App = () => {
                     onClick={handleLogout}
                 />
             </div>
-            <CreateNew
-                title={title}
-                setTitle={setTitle}
-                author={author}
-                setAuthor={setAuthor}
-                url={url}
-                setUrl={setUrl}
-                createBlog={createBlog}
-            />
+            <Toggleable buttonLabel="new note">
+                <CreateNew
+                    title={title}
+                    setTitle={setTitle}
+                    author={author}
+                    setAuthor={setAuthor}
+                    url={url}
+                    setUrl={setUrl}
+                    createBlog={createBlog}
+                />
+            </Toggleable>
             <div>
                 {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
             </div>
