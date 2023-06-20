@@ -1,4 +1,4 @@
-const CreateNew = ({title, setTitle, author, setAuthor, url, setUrl, createBlog}) => {
+const BlogForm = ({title, setTitle, author, setAuthor, url, setUrl, createBlog}) => {
     return (
         <div>
             <h2>create new</h2>
@@ -38,4 +38,4 @@ const CreateNew = ({title, setTitle, author, setAuthor, url, setUrl, createBlog}
     )
 }
 
-export default CreateNew
+export default BlogForm

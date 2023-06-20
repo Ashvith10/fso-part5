@@ -9,7 +9,7 @@ const Toggleable = ({buttonLabel, children}) => {
   const toggleVisibility = () => setVisible(!visible)
 
   return (
-    <div>
+    <div className="toggleable">
       <div style={hideWhenVisible}>
         <button onClick={toggleVisibility}>{buttonLabel}</button>
       </div>

@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+
 import Blog from './components/Blog'
-import LoginForm from './components/LoginForm'
-import CreateNew from './components/CreateNew'
+import PageComponent from './components/PageComponent'
+import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
-import blogService from './services/blogs'
-import loginService from './services/login'
 import Success from './components/Success'
 import Error from './components/Error'
+
+import blogService from './services/blogs'
+import loginService from './services/login'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -23,8 +26,7 @@ const App = () => {
   const handleLogin = async (event) => {
       event.preventDefault()
       try {
-          const user = await loginService
-              .login({username, password})
+          const user = await loginService.login({username, password})
           window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
 
           blogService.setToken(user.token)
@@ -82,47 +84,54 @@ const App = () => {
       }
   }, [])
 
-  if (user === null) {
-      return <LoginForm
-                username={username}
-                setUsername={setUsername}
-                password={password}
-                setPassword={setPassword}
-                handleLogin={handleLogin}
+  return (
+      <div>
+        { !user &&
+            <PageComponent
+                title="log in to application"
                 successMessage={successMessage}
                 errorMessage={errorMessage}
-             />
-        } else {
-      return (
-          <div>
-            <h2>blogs</h2>
-            <Success message={successMessage}/>
-            <Error message={errorMessage}/>
-            <div>
-                <span>{user.name} logged in</span>
-                <input
-                    type="button"
-                    value="logout"
-                    onClick={handleLogout}
+            >
+                <LoginForm
+                    username={username}
+                    setUsername={setUsername}
+                    password={password}
+                    setPassword={setPassword}
+                    handleLogin={handleLogin}
                 />
-            </div>
-            <Toggleable buttonLabel="new note">
-                <CreateNew
-                    title={title}
-                    setTitle={setTitle}
-                    author={author}
-                    setAuthor={setAuthor}
-                    url={url}
-                    setUrl={setUrl}
-                    createBlog={createBlog}
-                />
-            </Toggleable>
-            <div>
-                {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
-            </div>
-          </div>
-      )
-  }
+            </PageComponent>}
+        { user &&
+                <div>
+                    <PageComponent
+                        title="blogs"
+                        successMessage={successMessage}
+                        errorMessage={errorMessage}
+                    >
+                        <span>{user.name} logged in</span>
+                        <input
+                            type="button"
+                            value="logout"
+                            onClick={handleLogout}
+                        />
+                    </PageComponent>
+                    <Toggleable buttonLabel="new note">
+                        <BlogForm
+                            title={title}
+                            setTitle={setTitle}
+                            author={author}
+                            setAuthor={setAuthor}
+                            url={url}
+                            setUrl={setUrl}
+                            createBlog={createBlog}
+                        />
+                    </Toggleable>
+                    <div id="blogs">
+                        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+                    </div>
+                </div>
+        }
+      </div>
+  )
 }
 
 export default App
