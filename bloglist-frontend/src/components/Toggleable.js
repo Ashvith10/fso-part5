@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Toggleable = ({buttonLabel, children}) => {
+const Toggleable = ({ buttonLabel, children }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
