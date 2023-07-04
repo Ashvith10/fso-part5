@@ -108,7 +108,7 @@ const App = () => {
               <span>{user.name} logged in</span>
               <input type="button" value="logout" onClick={handleLogout} />
             </PageComponent>
-            <Toggleable buttonLabel="new note">
+            <Toggleable affirmLabel="new note" cancelLabel="cancel">
               <BlogForm addBlog={createBlog} />
             </Toggleable>
             <div id="blogs">

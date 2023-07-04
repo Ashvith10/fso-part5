@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Toggleable = ({ buttonLabel, children }) => {
+const Toggleable = ({ affirmLabel, cancelLabel, children }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -12,18 +12,19 @@ const Toggleable = ({ buttonLabel, children }) => {
   return (
     <div className="toggleable">
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <input className="affirm" type="button" onClick={toggleVisibility} value={affirmLabel} />
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <input className="cancel" type="button" onClick={toggleVisibility} value={cancelLabel}/>
       </div>
     </div>
   )
 }
 
 Toggleable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
+  affirmLabel: PropTypes.string.isRequired,
+  cancelLabel: PropTypes.string.isRequired
 }
 
 export default Toggleable
