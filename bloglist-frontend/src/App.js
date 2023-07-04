@@ -42,6 +42,29 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (blog) => {
+    try {
+      const updatedBlog = await blogService
+        .update(blog.id, { likes: blog.likes + 1 })
+      setBlogs(prevState => prevState.map(savedBlog =>
+        (blog.id === savedBlog.id) ? updatedBlog : savedBlog))
+    } catch (exception) {
+      setErrorMessage(exception.response.data.error)
+      setTimeout(() => setErrorMessage(null), 5000)
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.destroy(id)
+      setBlogs(prevState => prevState
+        .filter(savedBlog => id !== savedBlog.id))
+    } catch (exception) {
+      setErrorMessage(exception.response.data.error)
+      setTimeout(() => setErrorMessage(null), 5000)
+    }
+  }
+
   const handleLogout = async () => {
     window.localStorage.setItem('loggedBlogUser', '')
     setUser(null)
@@ -94,7 +117,10 @@ const App = () => {
                   .sort((a, b) => b.likes - a.likes)
                   .map(blog =>
                     <Blog key={blog.id} blog={blog}
-                      setBlogs={setBlogs} user={user}/>)
+                      setBlogs={setBlogs}
+                      updateBlog={updateBlog}
+                      deleteBlog={deleteBlog}
+                      user={user}/>)
               }
             </div>
           </div>

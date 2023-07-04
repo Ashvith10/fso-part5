@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, setBlogs, user }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,33 +13,34 @@ const Blog = ({ blog, setBlogs, user }) => {
   const hideWhenVisible = { display: blogVisible ? 'none' : '' }
   const showWhenVisible = { display: blogVisible ? '' : 'none' }
 
-  const handleLike = async () => {
-    const updatedBlog = await blogService
-      .update(blog.id, { ...blog, likes: blog.likes + 1, user: blog.user.id })
-    setBlogs(prevState => prevState.map(savedBlog =>
-      (blog.id === savedBlog.id) ? updatedBlog : savedBlog))
-  }
-
-  const handleDelete = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)){
-      await blogService.destroy(blog.id)
-      setBlogs(prevState => prevState.filter(savedBlog => blog.id !== savedBlog.id))
+  const handleLike = () => updateBlog(blog)
+  const handleDelete = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      deleteBlog(blog.id)
     }
   }
 
   return (
-    <div style={blogStyle} id={blog.id}>
-      <div className="blog-title">
-        {blog.title} {blog.author}
+    <div className="blog" style={blogStyle} id={blog.id}>
+      <div className="blog-header">
+        <span className="blog-title">
+          {blog.title}
+        </span>
+        &nbsp;
+        <span className="blog-author">
+          {blog.author}
+        </span>
         &nbsp;
         <input
           type="button"
+          className="hide"
           value="view"
           style={hideWhenVisible}
           onClick={() => setBlogVisible(true)}
         />
         <input
           type="button"
+          className="show"
           value="hide"
           style={showWhenVisible}
           onClick={() => setBlogVisible(false)}
@@ -48,8 +48,8 @@ const Blog = ({ blog, setBlogs, user }) => {
       </div>
       <div className="blog-details" style={showWhenVisible}>
         <div className="blog-url">{blog.url}</div>
-        <div className="blog-likes">
-          likes {blog.likes}&nbsp;
+        <div className="blog-about-likes">
+          likes <span className="blog-likes">{blog.likes}</span>&nbsp;
           <input
             type="button"
             value="like"
