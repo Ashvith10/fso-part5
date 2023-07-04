@@ -33,14 +33,14 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
         &nbsp;
         <input
           type="button"
-          className="hide"
+          className="show"
           value="view"
           style={hideWhenVisible}
           onClick={() => setBlogVisible(true)}
         />
         <input
           type="button"
-          className="show"
+          className="hide"
           value="hide"
           style={showWhenVisible}
           onClick={() => setBlogVisible(false)}
