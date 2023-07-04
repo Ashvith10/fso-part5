@@ -32,7 +32,7 @@ const Blog = ({ blog, setBlogs, user }) => {
     <div style={blogStyle} id={blog.id}>
       <div className="blog-title">
         {blog.title} {blog.author}
-                &nbsp;
+        &nbsp;
         <input
           type="button"
           value="view"
@@ -49,7 +49,7 @@ const Blog = ({ blog, setBlogs, user }) => {
       <div className="blog-details" style={showWhenVisible}>
         <div className="blog-url">{blog.url}</div>
         <div className="blog-likes">
-                    likes {blog.likes}&nbsp;
+          likes {blog.likes}&nbsp;
           <input
             type="button"
             value="like"
