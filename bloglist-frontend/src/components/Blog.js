@@ -53,6 +53,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
           <input
             type="button"
             value="like"
+            className="like"
             onClick={handleLike}
           />
         </div>
@@ -63,6 +64,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
                       <input
                         type="button"
                         value="delete"
+                        className="delete"
                         onClick={handleDelete}
                       />
                     </div>)

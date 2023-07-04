@@ -1,27 +1,24 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
   const blog = {
-    'url':'https://www.google.com',
-    'title':'Title',
-    'author':'Author',
+    'url': 'https://www.google.com',
+    'title': 'Title',
+    'author': 'Author',
     'user': {
-      'username':'Username',
-      'name':'Name',
-      'id':'64802c91105d71169d4b524a'
+      'username': 'Username',
+      'name': 'Name',
     },
-    'likes':5,
-    'id':'64914457e7969414b64dd0e4'
+    'likes': 1,
   }
 
   const user = {
-    'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFzaHZpdGgiLCJpZCI6IjY0YTQwNTMwYjIxM2U4YmIxODRjMjdlNSIsImlhdCI6MTY4ODQ3MDg0MX0.3AnYebHX6gURlN8I2LQTSZQsC16n1HlgV6Wr-_10FtA',
-    'username': 'ashvith',
-    'name': 'Ashvith'
+    'username': 'Username',
+    'name': 'Name'
   }
 
   test('Render blog\'s title and author, not URL or like by default', () => {
@@ -40,7 +37,7 @@ describe('<Blog />', () => {
     expect(like).not.toBeVisible()
   })
 
-  test('blog\'s URL and number of likes are shown when \'show\' button is pressed', async () => {
+  test('Blog\'s URL and number of likes are shown when \'show\' button is pressed', async () => {
     const { container } = render(<Blog blog={blog} user={user} />)
 
     const url = container.querySelector('.blog-url')
@@ -55,5 +52,18 @@ describe('<Blog />', () => {
 
     expect(url).toBeVisible()
     expect(like).toBeVisible()
+  })
+
+  test('If the like button is clicked twice, the event handler the component received as props is called twice', async () => {
+    const mockHandler = jest.fn()
+
+    const { container } = render(<Blog blog={blog} updateBlog={mockHandler} user={user} />)
+
+    const virtualUser = userEvent.setup()
+    const button = container.querySelector('.like')
+    await virtualUser.click(button)
+    await virtualUser.click(button)
+
+    expect (mockHandler.mock.calls).toHaveLength(2)
   })
 })
