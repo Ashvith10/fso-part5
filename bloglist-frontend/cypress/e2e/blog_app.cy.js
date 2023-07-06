@@ -103,6 +103,15 @@ describe('template spec', () => {
           expect(newVal).to.eq(prevVal)
         })
       })
+
+      it('User who created the blog can delete it', () => {
+        cy.get('.show').click()
+        cy.get('.blog-user').contains(credentials.name)
+        cy.get('.delete').click()
+
+        cy.get('.blog-title').should('not.exist')
+        cy.get('.blog-author').should('not.exist')
+      })
     })
   })
 })
