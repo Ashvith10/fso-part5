@@ -1,11 +1,15 @@
 import chaiColors from 'chai-colors'
-chai.use(chaiColors)
+chai.use(chaiColors);
 
 const credentials = {
-  'username': 'username',
-  'name': 'Name',
-  'password': 'password'
+  "username": "username",
+  "name": "Name",
+  "password": "password"
 }
+
+const rngStrGenerator = () => Math.random()
+                                .toString(36)
+                                .substring(2)
 
 describe('template spec', () => {
   beforeEach(() => {
@@ -25,7 +29,7 @@ describe('template spec', () => {
     beforeEach(() => {
       cy.request('POST', 'http://localhost:3003/api/users', credentials)
     })
-
+    
     it('succeeds with correct credentials', () => {
       cy.get('.username').type(credentials.username)
       cy.get('.password').type(credentials.password)
@@ -38,10 +42,6 @@ describe('template spec', () => {
     })
 
     it('fails with wrong credentials', () => {
-      const rngStrGenerator = () => Math.random()
-        .toString(36)
-        .substring(2)
-
       cy.get('.username').type(rngStrGenerator())
       cy.get('.password').type(rngStrGenerator())
       cy.get('.submitLogin').click()
@@ -55,11 +55,11 @@ describe('template spec', () => {
 
   describe('When logged in', () => {
     const blog = {
-      'title': 'Title of the Blog',
-      'author': 'John·Doe',
-      'url': 'https://www.example.com/'
+      "title": 'Title of the blog',
+      "author": "John·Doe",
+      "url": "https://www.example.com/"
     }
-
+    
     beforeEach(() => {
       cy.request('POST', 'http://localhost:3003/api/users', credentials)
       cy.get('.username').type(credentials.username)
@@ -85,11 +85,11 @@ describe('template spec', () => {
     describe('On creation', () => {
       beforeEach(() => {
         cy.get('.affirm').click()
-
+        
         cy.get('.blog-title-field').type(blog.title)
         cy.get('.blog-author-field').type(blog.author)
         cy.get('.blog-url-field').type(blog.url)
-
+        
         cy.get('.createNote').click()
       })
 
@@ -111,6 +111,26 @@ describe('template spec', () => {
 
         cy.get('.blog-title').should('not.exist')
         cy.get('.blog-author').should('not.exist')
+      })
+
+      it('Only the creator can see the delete button of a blog, not anyone else', () => {
+        const credentials_2 = {
+          username: 'username2',
+          name: 'Name2',
+          password: 'password2'
+        }
+
+        cy.request('POST', 'http://localhost:3003/api/users', credentials_2)
+
+        cy.get('.logout').click()
+
+        cy.get('.username').type(credentials_2.username)
+        cy.get('.password').type(credentials_2.password)
+        cy.get('.submitLogin').click()
+
+        cy.get('.show').click()
+        cy.get('.blog-user').should('not.contain', credentials_2.name)
+        cy.get('.delete').should('not.exist')
       })
     })
   })
