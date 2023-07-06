@@ -1,6 +1,12 @@
 import chaiColors from 'chai-colors'
 chai.use(chaiColors);
 
+const credentials = {
+  "username": "username",
+  "name": "Name",
+  "password": "password"
+}
+
 describe('template spec', () => {
   beforeEach(() => {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -16,12 +22,6 @@ describe('template spec', () => {
   })
 
   describe('Login', () => {
-    const credentials = {
-      "username": "username",
-      "name": "Name",
-      "password": "password"
-    }
-
     beforeEach(() => {
       cy.request('POST', 'http://localhost:3003/api/users', credentials)
     })
@@ -50,6 +50,36 @@ describe('template spec', () => {
         .contains('Invalid username and password')
         .should('have.css', 'color')
         .and('be.colored', '#ff0000')
+    })
+  })
+
+  describe('When logged in', () => {
+    const blog = {
+      "title": 'Title of the Blog',
+      "author": "John·Doe",
+      "url": "https://www.example.com/"
+    }
+    
+    beforeEach(() => {
+      cy.request('POST', 'http://localhost:3003/api/users', credentials)
+      cy.get('.username').type(credentials.username)
+      cy.get('.password').type(credentials.password)
+      cy.get('.submitLogin').click()
+    })
+
+    it('A blog can be created', () => {
+      cy.get('.affirm').click()
+
+      cy.get('.blog-title-field').type(blog.title)
+      cy.get('.blog-author-field').type(blog.author)
+      cy.get('.blog-url-field').type(blog.url)
+
+      cy.get('.createNote').click()
+
+      cy.get('.blog-title').contains(blog.title)
+      cy.get('.blog-author').contains(blog.author)
+      cy.get('.show').click()
+      cy.get('.blog-url').contains(blog.url)
     })
   })
 })

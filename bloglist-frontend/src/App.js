@@ -106,7 +106,7 @@ const App = () => {
               errorMessage={errorMessage}
             >
               <span>{user.name} logged in</span>
-              <input type="button" value="logout" onClick={handleLogout} />
+              <input className="logout" type="button" value="logout" onClick={handleLogout} />
             </PageComponent>
             <Toggleable affirmLabel="new note" cancelLabel="cancel">
               <BlogForm addBlog={createBlog} />

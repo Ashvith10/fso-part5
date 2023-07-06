@@ -17,7 +17,7 @@ describe('<BlogForm />', () => {
 
     const authorInput = container.querySelector('input[name="Author"]')
     await virtualUser.type(authorInput, helper.blog.author)
-    
+
     const urlInput = container.querySelector('input[name="URL"]')
     await virtualUser.type(urlInput, helper.blog.url)
 
@@ -25,7 +25,7 @@ describe('<BlogForm />', () => {
     await virtualUser.click(createButton)
 
     const { user, likes, ...formBlog } = helper.blog
-    
+
     expect(addBlog.mock.calls).toHaveLength(1)
     expect(addBlog.mock.calls[0][0]).toStrictEqual(formBlog)
   })
