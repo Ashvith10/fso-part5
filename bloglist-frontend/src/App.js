@@ -111,7 +111,7 @@ const App = () => {
             <Toggleable affirmLabel="new note" cancelLabel="cancel">
               <BlogForm addBlog={createBlog} />
             </Toggleable>
-            <div id="blogs">
+            <div className="blogs">
               {
                 blogs
                   .sort((a, b) => b.likes - a.likes)
