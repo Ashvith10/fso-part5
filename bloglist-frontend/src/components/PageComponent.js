@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types'
+import Notification from './Notification'
 
-import Success from './Success'
-import Error from './Error'
-
-const PageComponent = ({ title, children, successMessage, errorMessage }) => {
+const PageComponent = ({ title, info, children }) => {
   return (
     <div className="pagecomponent">
       <h1 className="title">{title}</h1>
-      <Success message={successMessage}/>
-      <Error message={errorMessage}/>
+      <Notification info={info}/>
       {children}
     </div>)
 }

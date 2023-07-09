@@ -13,8 +13,12 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [info, setInfo] = useState({ message: null })
+
+  const notifyWith = (message, type) => {
+    setInfo({ message, type })
+    setTimeout(() => setInfo({ message: null }), 3000)
+  }
 
   const handleLogin = async (loginObject) => {
     try {
@@ -22,11 +26,9 @@ const App = () => {
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setSuccessMessage('Login succeeded')
-      setTimeout(() => setSuccessMessage(null), 5000)
+      notifyWith('Login succeeded', 'success')
     } catch(exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => setErrorMessage(null), 5000)
+      notifyWith(exception.response.data.error, 'error')
     }
   }
 
@@ -34,11 +36,9 @@ const App = () => {
     try {
       const createdBlog = await blogService.create(blogFormObject)
       setBlogs(prevState => ([...prevState, createdBlog ]))
-      setSuccessMessage(`A new blog ${createdBlog.title} by ${createdBlog.author} added`)
-      setTimeout(() => setSuccessMessage(null), 5000)
+      notifyWith(`A new blog ${createdBlog.title} by ${createdBlog.author} added`, 'success')
     } catch (exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => setErrorMessage(null), 5000)
+      notifyWith(exception.response.data.error, 'error')
     }
   }
 
@@ -49,8 +49,7 @@ const App = () => {
       setBlogs(prevState => prevState.map(savedBlog =>
         (blog.id === savedBlog.id) ? updatedBlog : savedBlog))
     } catch (exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => setErrorMessage(null), 5000)
+      notifyWith(exception.response.data.error, 'error')
     }
   }
 
@@ -60,16 +59,14 @@ const App = () => {
       setBlogs(prevState => prevState
         .filter(savedBlog => id !== savedBlog.id))
     } catch (exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => setErrorMessage(null), 5000)
+      notifyWith(exception.response.data.error, 'error')
     }
   }
 
   const handleLogout = async () => {
     window.localStorage.setItem('loggedBlogUser', '')
     setUser(null)
-    setSuccessMessage('Logged out')
-    setTimeout(() => setSuccessMessage(null), 5000)
+    notifyWith('Logged out', 'success')
   }
 
   useEffect(() => {
@@ -91,8 +88,7 @@ const App = () => {
         !user &&
           <PageComponent
             title="log in to application"
-            successMessage={successMessage}
-            errorMessage={errorMessage}
+            info={info}
           >
             <LoginForm login={handleLogin} />
           </PageComponent>
@@ -102,8 +98,7 @@ const App = () => {
           <div>
             <PageComponent
               title="blogs"
-              successMessage={successMessage}
-              errorMessage={errorMessage}
+              info={info}
             >
               <span>{user.name} logged in</span>
               <input className="logout" type="button" value="logout" onClick={handleLogout} />

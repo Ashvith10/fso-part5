@@ -1,5 +1,4 @@
-.successMessage {
-    color: green;
+.notification {
     background: lightgrey;
     font-size: 20px;
     border-style: solid;
@@ -8,12 +7,10 @@
     margin-bottom: 10px;
 }
 
-.errorMessage {
+.success {
+    color: green;
+}
+
+.error {
     color: red;
-    background: lightgrey;
-    font-size: 20px;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
 }
