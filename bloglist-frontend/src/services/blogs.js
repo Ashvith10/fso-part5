@@ -1,33 +1,31 @@
 import axios from 'axios'
+import storageService from './storage'
 const baseUrl = '/api/blogs'
 
-let token = null
-
-const setToken = (newToken) => {
-  token = `Bearer ${newToken}`
+const headers = {
+  'Authorization': storageService.loadUser()
+    ? `Bearer ${storageService.loadUser().token}`
+    : null
 }
 
 const getAll = async () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+  const request = await axios.get(baseUrl)
+  return request.data
 }
 
 const create = async (newObject) => {
-  const config = { headers: { Authorization: token } }
-  const response = await axios.post(baseUrl, newObject, config)
+  const response = await axios.post(baseUrl, newObject, { headers })
   return response.data
 }
 
-const update = async (id, newObject) => {
-  const config = { headers: { Authorization: token } }
-  const response = await axios.put(`${baseUrl}/${id}`, newObject, config)
+const update = async (newObject) => {
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject, { headers })
   return response.data
 }
 
 const destroy = async (id) => {
-  const config = { headers: { Authorization: token } }
-  const response = await axios.delete(`${baseUrl}/${id}`, config)
+  const response = await axios.delete(`${baseUrl}/${id}`, { headers })
   return response.data
 }
 
-export default { setToken, getAll, create, update, destroy }
+export default { getAll, create, update, destroy }

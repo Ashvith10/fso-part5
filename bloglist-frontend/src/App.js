@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 
 import Blog from './components/Blog'
 import PageComponent from './components/PageComponent'
@@ -9,6 +8,7 @@ import LoginForm from './components/LoginForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import storageService from './services/storage'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -23,13 +23,18 @@ const App = () => {
   const handleLogin = async (loginObject) => {
     try {
       const user = await loginService.login(loginObject)
-      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
-      blogService.setToken(user.token)
       setUser(user)
+      storageService.saveUser(user)
       notifyWith('Login succeeded', 'success')
     } catch(exception) {
       notifyWith(exception.response.data.error, 'error')
     }
+  }
+
+  const handleLogout = async () => {
+    storageService.removeUser()
+    setUser(null)
+    notifyWith('Logged out', 'success')
   }
 
   const createBlog = async (blogFormObject) => {
@@ -45,7 +50,7 @@ const App = () => {
   const updateBlog = async (blog) => {
     try {
       const updatedBlog = await blogService
-        .update(blog.id, { likes: blog.likes + 1 })
+        .update({ id: blog.id, likes: blog.likes + 1 })
       setBlogs(prevState => prevState.map(savedBlog =>
         (blog.id === savedBlog.id) ? updatedBlog : savedBlog))
     } catch (exception) {
@@ -63,23 +68,13 @@ const App = () => {
     }
   }
 
-  const handleLogout = async () => {
-    window.localStorage.setItem('loggedBlogUser', '')
-    setUser(null)
-    notifyWith('Logged out', 'success')
-  }
-
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs( blogs ))
+    blogService.getAll().then(blogs => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
-    const loggedBlogUser = window.localStorage.getItem('loggedBlogUser')
-    if (loggedBlogUser) {
-      const user = JSON.parse(loggedBlogUser)
-      blogService.setToken(user.token)
-      setUser(user)
-    }
+    const user = storageService.loadUser()
+    setUser(user)
   }, [])
 
   return (
